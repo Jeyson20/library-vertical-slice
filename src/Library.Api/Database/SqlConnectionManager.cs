@@ -2,9 +2,9 @@
 
 namespace Library.Api.Database;
 
-internal class SqlConnectionFactory(string connectionString) : IDatabaseConnectionFactory
+internal class SqlConnectionManager(string connectionString) : IDatabaseConnection
 {
 	private readonly string _connectionString = connectionString;
-
 	public IDbConnection Connection => new SqlConnection(_connectionString);
+
 }

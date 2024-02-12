@@ -2,7 +2,7 @@
 
 namespace Library.Api.Shared.Interfaces
 {
-	public interface IDatabaseConnectionFactory
+	public interface IDatabaseConnection
 	{
 		IDbConnection Connection { get; }
 	}
