@@ -9,8 +9,10 @@ builder.Services.AddSwaggerGen();
 string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
 	?? throw new InvalidOperationException(nameof(connectionString));
 
-builder.Services.AddSingleton<IDatabaseConnectionFactory, SqlConnectionFactory>(
-	c => new SqlConnectionFactory(connectionString));
+builder.Services.AddSingleton<IDatabaseConnection, SqlConnectionManager>(
+	c => new SqlConnectionManager(connectionString));
+
+builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 
 var assembly = typeof(Program).Assembly;
 
