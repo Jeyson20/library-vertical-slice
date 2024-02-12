@@ -9,7 +9,7 @@ public class Result
 	public Error Error { get; }
 	public HttpStatusCode StatusCode { get; }
 
-	protected internal Result(bool isSuccess, Error error, HttpStatusCode statusCode)
+	protected Result(bool isSuccess, Error error, HttpStatusCode statusCode)
 	{
 		IsSuccess = isSuccess;
 		Error = error;

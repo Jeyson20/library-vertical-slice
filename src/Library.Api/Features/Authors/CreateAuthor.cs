@@ -1,10 +1,12 @@
-﻿using Library.Api.DTOs.Requests;
+﻿using Library.Api.Data;
+using Library.Api.DTOs.Requests;
+using Library.Api.DTOs.Responses;
 
 namespace Library.Api.Features.Authors
 {
 	public static class CreateAuthor
 	{
-		public record class Command(string FirstName, string LastName, DateTime DateOfBirth) : IRequest<Result<string>>;
+		public record class Command(string FirstName, string LastName, DateTime DateOfBirth) : IRequest<Result<AuthorResponse>>;
 		public class Validator : AbstractValidator<Command>
 		{
 			public Validator()
@@ -17,33 +19,28 @@ namespace Library.Api.Features.Authors
 			}
 		}
 
-		internal sealed class Handler(IDatabaseService dbService) : IRequestHandler<Command, Result<string>>
+		internal sealed class Handler(IAuthorRepository repository) : IRequestHandler<Command, Result<AuthorResponse>>
 		{
-			private readonly IDatabaseService _dbService = dbService;
-			public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
+			private readonly IAuthorRepository _repository = repository;
+			public async Task<Result<AuthorResponse>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				try
 				{
-					//string id = Guid.NewGuid().ToString();
-
-					//var sql = """
-					//INSERT INTO Author (Id, FirstName, LastName, DateOfBirth)
-					//VALUES(@Id, @FirstName, @Lastname, @DateOfBirth)
-					//""";
-
 					var newAuthor = Author.Create(
 						request.FirstName,
 						request.LastName,
 						request.DateOfBirth);
 
-					await _dbService.Insert(newAuthor);
+					var author = await _repository.Insert(newAuthor);
 
-					return Result.Success(newAuthor.Id);
+					var response = author.Adapt<AuthorResponse>();
+
+					return Result.Success(response);
 
 				}
 				catch (SqlException error)
 				{
-					return Result<string>.Failure(
+					return Result<AuthorResponse>.Failure(
 						Errors.DatabaseError(nameof(Author), error.Message));
 				}
 			}

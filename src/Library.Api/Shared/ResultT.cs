@@ -6,7 +6,7 @@ public class Result<TValue> : Result
 {
 	private readonly TValue _value;
 	public bool HasValue => !HasNoValue;
-	public bool HasNoValue => _value is null;
+	private bool HasNoValue => _value is null;
 
 	protected internal Result(TValue value, bool isSuccess, Error error, HttpStatusCode statusCode)
 		: base(isSuccess, error, statusCode)
@@ -14,7 +14,7 @@ public class Result<TValue> : Result
 
 	public static Result<TValue> None => new(default!, default, default!, default);
 
-	public static new Result<TValue> Failure(Error error)
+	public new static Result<TValue> Failure(Error error)
 	{
 		return new Result<TValue>(default!, false, error, HttpStatusCode.BadRequest);
 	}

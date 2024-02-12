@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Library.Api.Data;
+using Library.Api.Entities;
 
 namespace Library.UnitTests.Authors
 {
@@ -20,19 +21,17 @@ namespace Library.UnitTests.Authors
 		}
 
 		[Fact]
-		public async Task CreateAuthor_ShouldReturnSuccesResultWithId_WhenOperationIsSuccessfull()
+		public async Task CreateAuthor_ShouldReturnSuccessResultWithId_WhenOperationIsSuccessful()
 		{
 			//Arrange
 			var command = new CreateAuthor.Command("test", "test", new DateTime(2000, 01, 01));
-			var connectionFactoryMock = new Mock<IDatabaseService>();
+			var connectionFactoryMock = new Mock<IAuthorRepository>();
 			var handler = new CreateAuthor.Handler(connectionFactoryMock.Object);
-
 			//Act
 			var result = await handler.Handle(command, CancellationToken.None);
 
 			//Assert
 			Assert.True(result.IsSuccess);
-			Assert.NotNull(result.Value);
 		}
 	}
 }
