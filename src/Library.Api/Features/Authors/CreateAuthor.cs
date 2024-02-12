@@ -17,36 +17,34 @@ namespace Library.Api.Features.Authors
 			}
 		}
 
-		internal sealed class Handler(IDatabaseConnectionFactory connectionFactory) : IRequestHandler<Command, Result<string>>
+		internal sealed class Handler(IDatabaseService dbService) : IRequestHandler<Command, Result<string>>
 		{
-			private readonly IDatabaseConnectionFactory _connectionFactory = connectionFactory;
+			private readonly IDatabaseService _dbService = dbService;
 			public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
 			{
 				try
 				{
-					string id = Guid.NewGuid().ToString();
+					//string id = Guid.NewGuid().ToString();
 
-					var sql = """
-					INSERT INTO Author (Id, FirstName, LastName, DateOfBirth)
-					VALUES(@Id, @FirstName, @Lastname, @DateOfBirth)
-					""";
+					//var sql = """
+					//INSERT INTO Author (Id, FirstName, LastName, DateOfBirth)
+					//VALUES(@Id, @FirstName, @Lastname, @DateOfBirth)
+					//""";
 
-					await _connectionFactory.Connection.ExecuteAsync(sql, new
-					{
-						id,
+					var newAuthor = Author.Create(
 						request.FirstName,
 						request.LastName,
-						request.DateOfBirth
-					});
+						request.DateOfBirth);
 
-					return Result.Success(id);
+					await _dbService.Insert(newAuthor);
+
+					return Result.Success(newAuthor.Id);
 
 				}
 				catch (SqlException error)
 				{
-					return Result<string>.Failure(Errors.DatabaseError(
-						typeof(Author),
-						error.Message));
+					return Result<string>.Failure(
+						Errors.DatabaseError(nameof(Author), error.Message));
 				}
 			}
 		}
