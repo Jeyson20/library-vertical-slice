@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Library.Api.Shared;
+namespace Library.Api.Shared.Models;
 
 public class Result
 {

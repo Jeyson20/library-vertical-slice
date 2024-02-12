@@ -1,4 +1,4 @@
-﻿namespace Library.Api.Middleware;
+﻿namespace Library.Api.Shared.Middleware;
 
 public class ExceptionHandlerMiddleware(RequestDelegate next)
 {

@@ -1,4 +1,4 @@
-﻿using Library.Api.Middleware;
+﻿using Library.Api.Shared.Middleware;
 
 namespace Library.Api.Shared.Extensions;
 

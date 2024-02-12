@@ -1,5 +1,4 @@
-﻿using Library.Api.Data;
-using Library.Api.DTOs.Responses;
+﻿using Library.Api.DTOs.Responses;
 
 namespace Library.Api.Features.Authors
 {

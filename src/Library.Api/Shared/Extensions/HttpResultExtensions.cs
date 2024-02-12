@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Library.Api.Shared.Models;
+using System.Net;
 
 namespace Library.Api.Shared.Extensions;
 

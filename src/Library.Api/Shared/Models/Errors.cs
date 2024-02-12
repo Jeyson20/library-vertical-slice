@@ -1,4 +1,4 @@
-﻿namespace Library.Api.Shared;
+﻿namespace Library.Api.Shared.Models;
 
 public static class Errors
 {
