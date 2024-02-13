@@ -11,22 +11,14 @@ namespace Library.Api.Features.Authors
 			private readonly IAuthorRepository _repository = repository;
 			public async Task<Result<AuthorResponse>> Handle(Query request, CancellationToken cancellationToken)
 			{
-				try
-				{
-					var author = await _repository.GetById(request.AuthorId);
+				var author = await _repository.GetById(request.AuthorId);
 
-					if (author is null)
-						return Result<AuthorResponse>.NotFound();
+				if (author is null)
+					return Result<AuthorResponse>.NotFound();
 
-					var authorResponse = author.Adapt<AuthorResponse>();
+				var authorResponse = author.Adapt<AuthorResponse>();
 
-					return Result.Success(authorResponse);
-				}
-				catch (SqlException error)
-				{
-					return Result<AuthorResponse>.Failure(
-						Errors.DatabaseError(nameof(Author), error.Message));
-				}
+				return Result.Success(authorResponse);
 			}
 		}
 	}
@@ -37,13 +29,15 @@ namespace Library.Api.Features.Authors
 		{
 			app.MapGet("api/authors/{authorId}", async (string authorId, ISender sender) =>
 			{
-
 				var result = await sender.Send(
 					new GetAuthorById.Query(authorId));
 
 				return result.HandleResult();
 
-			}).WithTags("Authors");
+			}).Produces<AuthorResponse>()
+			.WithTags("Authors")
+			.WithSummary("Get author by id.")
+			.WithOpenApi();
 		}
 	}
 }

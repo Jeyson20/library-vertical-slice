@@ -1,4 +1,6 @@
-﻿namespace Library.Api.Shared.Middleware;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace Library.Api.Shared.Middleware;
 
 public class ExceptionHandlerMiddleware(RequestDelegate next)
 {
@@ -13,6 +15,10 @@ public class ExceptionHandlerMiddleware(RequestDelegate next)
 		catch (Shared.Exceptions.ValidationException ex)
 		{
 			await Results.UnprocessableEntity(new ValidationResult(ex.Errors)).ExecuteAsync(ctx);
+		}
+		catch (SqlException ex)
+		{
+			await Results.BadRequest(Errors.DatabaseError(ex.Message)).ExecuteAsync(ctx);
 		}
 		catch (Exception ex)
 		{

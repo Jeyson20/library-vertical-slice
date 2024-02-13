@@ -23,25 +23,16 @@ namespace Library.Api.Features.Authors
 			private readonly IAuthorRepository _repository = repository;
 			public async Task<Result<AuthorResponse>> Handle(Command request, CancellationToken cancellationToken)
 			{
-				try
-				{
-					var newAuthor = Author.Create(
-						request.FirstName,
-						request.LastName,
-						request.DateOfBirth);
+				var newAuthor = Author.Create(
+					request.FirstName,
+					request.LastName,
+					request.DateOfBirth);
 
-					var author = await _repository.Insert(newAuthor);
+				var author = await _repository.Insert(newAuthor);
 
-					var response = author.Adapt<AuthorResponse>();
+				var response = author.Adapt<AuthorResponse>();
 
-					return Result.Success(response);
-
-				}
-				catch (SqlException error)
-				{
-					return Result<AuthorResponse>.Failure(
-						Errors.DatabaseError(nameof(Author), error.Message));
-				}
+				return Result.Success(response);
 			}
 		}
 	}
@@ -58,8 +49,10 @@ namespace Library.Api.Features.Authors
 
 				return result.HandleResult();
 
-			}).WithTags("Authors");
+			}).Produces<AuthorResponse>()
+			.WithTags("Authors")
+			.WithSummary("Create author.")
+			.WithOpenApi();
 		}
 	}
 }
-
