@@ -24,17 +24,17 @@ namespace Library.Api.Data
 			page ??= 1;
 			pageSize ??= 20;
 			string tableName = typeof(TEntity).Name;
-			var offset = (int)((page - 1) * pageSize);
+			int offset = (int)((page - 1) * pageSize);
 			string columns = GetColumnNames<TEntity>();
 			string condition = searchCriteria != null ? BuildSearchCondition(searchCriteria) : string.Empty;
 
-			var query = $"""
-			             SELECT {columns}
-			             FROM {tableName}
-			             {condition}
-			             ORDER BY Id
-			             OFFSET {offset} ROWS FETCH NEXT {pageSize} ROWS ONLY
-			             """;
+			string query = $"""
+			                SELECT {columns}
+			                FROM {tableName}
+			                {condition}
+			                ORDER BY Id
+			                OFFSET {offset} ROWS FETCH NEXT {pageSize} ROWS ONLY
+			                """;
 
 			_logger.LogInformation("Executing: {Query}", query);
 
@@ -45,11 +45,11 @@ namespace Library.Api.Data
 		{
 			string tableName = typeof(TEntity).Name;
 			string columns = GetColumnNames<TEntity>();
-			var query = $"""
-			             SELECT {columns}
-			             FROM {tableName}
-			             WHERE Id = @Id
-			             """;
+			string query = $"""
+			                SELECT {columns}
+			                FROM {tableName}
+			                WHERE Id = @Id
+			                """;
 
 			_logger.LogInformation("Executing {query}", query);
 
@@ -66,11 +66,11 @@ namespace Library.Api.Data
 			string columnNamesString = string.Join(", ", propertyNames);
 			string valueParameters = string.Join(", ", propertyNames.Select(prop => $"@{prop}"));
 
-			var query = $"""
-			             INSERT INTO {tableName} ({columnNamesString})
-			             OUTPUT INSERTED.*
-			             VALUES ({valueParameters})
-			             """;
+			string query = $"""
+			                INSERT INTO {tableName} ({columnNamesString})
+			                OUTPUT INSERTED.*
+			                VALUES ({valueParameters})
+			                """;
 
 			_logger.LogInformation("Executing: {query} ", query);
 			
@@ -83,11 +83,11 @@ namespace Library.Api.Data
 			string tableName = typeof(TEntity).Name;
 			string propertyNames = string.Join(", ", GetPropertyNames(entity).Select(p => $"{p}=@{p}"));
 
-			var query = $"""
-			             UPDATE {tableName} 
-			             SET {propertyNames} 
-			             WHERE Id = @Id
-			             """;
+			string query = $"""
+			                UPDATE {tableName}
+			                SET {propertyNames}
+			                WHERE Id = @Id
+			                """;
 			
 			_logger.LogInformation("Executing: {query}", query);
 
@@ -100,7 +100,7 @@ namespace Library.Api.Data
 			await _db.ExecuteAsync(sql, parameters);
 		}
 
-		private static string BuildSearchCondition(object searchCriteria)
+		protected static string BuildSearchCondition(object searchCriteria)
 		{
 			var properties = searchCriteria.GetType().GetProperties();
 			var conditions = properties.Select(prop => $"{prop.Name} LIKE '%{prop.GetValue(searchCriteria)}%'");
