@@ -1,5 +1,6 @@
 using Library.Api.Data;
 using Library.Api.Features.Authors;
+using Library.Api.Features.Genres;
 using Library.Api.Shared.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>(
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 
 var assembly = typeof(Program).Assembly;
 
