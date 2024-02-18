@@ -9,5 +9,13 @@
 		public ICollection<Genre> InverseParentGenre { get; set; } = new List<Genre>();
 		public Genre? ParentGenre { get; set; }
 		public ICollection<Book> Books { get; set; } = new List<Book>();
+		
+		public static Genre Create(string name, string? description)
+			=> new()
+			{
+				Id = Guid.NewGuid().ToString(),
+				Name = name,
+				Description = description
+			};
 	}
 }
