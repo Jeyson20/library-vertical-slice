@@ -16,18 +16,28 @@ public class PublisherRepository(
 	public async Task<Publisher> Create(Publisher publisher, CancellationToken cancellationToken = default)
 	{
 		const string sql = """
-		                   INSERT INTO Publishers (Id, Name)
+		                   INSERT INTO Publisher (Id, Name)
 		                   OUTPUT INSERTED.*
 		                   VALUES (@Id, @Name)
 		                   """;
-		return await _dbConnection.Connection.QuerySingleAsync<Publisher>(sql, publisher);
+		
+		_logger.LogInformation("Executing: {Sql}", sql);
+		
+		return await _dbConnection.Connection.QuerySingleAsync<Publisher>(sql, new
+		{
+			publisher.Id,
+			publisher.Name
+		});
 	}
 	public async Task<IEnumerable<Publisher>> GetAll(CancellationToken cancellationToken = default)
 	{
 		const string sql = """
 		                   SELECT Id, Name
-		                   FROM Publishers
+		                   FROM Publisher
 		                   """;
+		
+		_logger.LogInformation("Executing: {Sql}", sql);
+		
 		return await _dbConnection.Connection.QueryAsync<Publisher>(sql, cancellationToken);
 	}
 }
