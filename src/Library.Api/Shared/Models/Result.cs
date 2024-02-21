@@ -19,4 +19,5 @@ public class Result
 	public static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None, HttpStatusCode.OK);
 	public static Result Failure(Error error) => new(false, error, HttpStatusCode.BadRequest);
 	public static Result<TValue> Failure<TValue>(Error error) => new(default!, false, error, HttpStatusCode.BadRequest);
+	public static Result NotFound() => new(false, Models.Error.None, HttpStatusCode.NotFound);
 }
