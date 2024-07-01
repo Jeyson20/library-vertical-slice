@@ -21,17 +21,24 @@ namespace Library.UnitTests.Authors
 		}
 
 		[Fact]
-		public async Task CreateAuthor_ShouldReturnSuccessResultWithId_WhenOperationIsSuccessful()
+		public async Task CreateAuthor_ShouldReturnCreatedAuthor()
 		{
 			//Arrange
 			var command = new CreateAuthor.Command("test", "test", new DateTime(2000, 01, 01));
-			var connectionFactoryMock = new Mock<IAuthorRepository>();
-			var handler = new CreateAuthor.Handler(connectionFactoryMock.Object);
+			var expectedAuthor = Author.Create("test", "test", new DateTime(2000, 01, 01));
+			
+			var repositoryMock = new Mock<IAuthorRepository>();
+			repositoryMock.Setup(x => x.Insert(It.IsAny<Author>()))
+				.ReturnsAsync(expectedAuthor);
+			
+			var handler = new CreateAuthor.Handler(repositoryMock.Object);
+			
 			//Act
 			var result = await handler.Handle(command, CancellationToken.None);
 
 			//Assert
 			Assert.True(result.IsSuccess);
+			Assert.NotNull(result.Value);
 		}
 	}
 }
